@@ -70,10 +70,19 @@ A quick sample code would look like this
       _spriteBatch.End();
 
 ```
+Since this filter uses shaders, you need to enable the HiDef profile at the start of your application.
+
+    graphics.GraphicsProfile = GraphicsProfile.HiDef;
+
+
+# OpenGL
+
+I presume this should work on OpenGL if the shader versions are changed but I have not tried out. Should someone need the OpenGL implementation I can check that out.
 
 # Credits
 All images in the tool were found on https://pixabay.com/ and are provided with the CC0 license. Note that they unfortunately are only available in .jpeg formats and so image artifacts crop up, especially when using extreme forms of color corretion.
 The bloom used in the game can be found here: https://github.com/UncleThomy/BloomFilter-for-Monogame-and-XNA
 
-All code was written by me. For feedback you can raise an issue on github or write with mail (kosmonaut3d@googlemail.com)
+All code was written by me. For feedback you can raise an issue on github or write by mail (kosmonaut3d@googlemail.com)
+There is also a forum thread, which makes feedback even easier. http://community.monogame.net/t/a-color-grading-correction-filter-for-you-to-use-on-github/9106
 
