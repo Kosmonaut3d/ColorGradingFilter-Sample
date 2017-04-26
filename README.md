@@ -24,7 +24,8 @@ This is the default look up table for the program has a size of (64 x 64)
 I use 16 values for each color and store all their permutations per default.
 
 One can generate this lut by calling 
-  _colorGradingFilter.CreateLUT(GraphicsDevice, ColorGradingFilter.LUTSizes.Size16, "LUT16.png");
+
+    _colorGradingFilter.CreateLUT(GraphicsDevice, ColorGradingFilter.LUTSizes.Size16, "LUT16.png");
 
 LUTSize32 gives higher precision, but needs more storage space (256x256). Even higher or lower resolutions could be implemented by simply changing the Size from 32 to 64 inside the function for example, but I found these 2 sufficient.
 
