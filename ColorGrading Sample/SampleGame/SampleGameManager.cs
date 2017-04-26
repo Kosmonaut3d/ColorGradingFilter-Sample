@@ -13,6 +13,7 @@ namespace ColorGrading_Sample.SampleGame
 {
     /// <summary>
     /// Simple "game". Control with WASD, the other ships will follow you but then try to back away when close.
+    /// Has a simple trail shader, which makes this very colorful
     /// </summary>
     public class SampleGameManager
     {
