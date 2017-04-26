@@ -130,7 +130,7 @@ namespace ColorGrading_Sample
 
             Window.Title = "F1 - F3: static images, F4: game, F5 - F11: LUTs";
 
-            
+            /*
             //Create LUT
             if (_state.IsKeyDown(Keys.F12))
             {
@@ -138,7 +138,7 @@ namespace ColorGrading_Sample
                 _colorGradingFilter.CreateLUT(GraphicsDevice, ColorGradingFilter.LUTSizes.Size32, "LUT32.png");
                 _colorGradingFilter.CreateLUT(GraphicsDevice, ColorGradingFilter.LUTSizes.Size64, "LUT64.png");
             }
-            
+            */
 
             //Change display mode
             if (_state.IsKeyDown(Keys.F1))
