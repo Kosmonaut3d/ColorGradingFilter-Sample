@@ -22,6 +22,8 @@ Different results from this application are apparent in the image below.
 
 You can clearly see how much is possible as a result.
 
+For more on this check out my blog article: https://kosmonautblog.wordpress.com/2017/04/26/color-grading-correction/
+
 # LUT
 
 LUTs (Look up tables) are used for the color correction. However, due to space and memory limitations, not all 32 bits of color are stored and recreated, instead fewer samples are used and the results are interpolated between them.
