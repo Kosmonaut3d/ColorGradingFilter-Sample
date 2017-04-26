@@ -38,7 +38,7 @@ namespace ColorGrading_Sample.Filters.ColorGrading
         private Texture2D _inputTexture;
         private Texture2D _lookupTable;
 
-        public enum LUTSizes { Size16, Size32, Size64 };
+        public enum LUTSizes { Size16, Size32, Size64, Size4 };
 
         #endregion
 
@@ -50,10 +50,10 @@ namespace ColorGrading_Sample.Filters.ColorGrading
             {
                 if (value != _size)
                 {
-                    if(value != 16 && value != 32 && value!= 64) throw new NotImplementedException("only 16 and 32 supported right now");
+                    if(value != 16 && value != 32 && value!= 64 && value!= 4) throw new NotImplementedException("only 16 and 32 supported right now");
                     _size = value;
                     _sizeParam.SetValue((float)_size);
-                    _sizeRootParam.SetValue((float) (_size == 16 ? 4 : 8));
+                    _sizeRootParam.SetValue((float) (_size== 4 ? 2 : _size == 16 ? 4 : 8));
                 }
             }
         }
@@ -136,7 +136,7 @@ namespace ColorGrading_Sample.Filters.ColorGrading
 
             InputTexture = input;
             LookUpTable = lookupTable;
-            Size = ((lookupTable.Width == 512) ? 64 : (lookupTable.Width == 64) ? 16 : 32);
+            Size = ((lookupTable.Width == 512) ? 64 : (lookupTable.Width == 256) ? 32 : (lookupTable.Width == 64) ? 16 : 4);
                 
             graphics.SetRenderTarget(_renderTarget);
             graphics.BlendState = BlendState.Opaque;
@@ -159,8 +159,8 @@ namespace ColorGrading_Sample.Filters.ColorGrading
 
             //_sizeParam.SetValue((float) ( lutsize == LUTSizes.Size16 ? 16 : lutsize == LUTSizes.Size32 ? 32 : 64));
             //_sizeRootParam.SetValue((float) (lutsize == LUTSizes.Size64 ? 8 : 4));
-            Size = lutsize == LUTSizes.Size16 ? 16 : lutsize == LUTSizes.Size32 ? 32 : 64;
-            int size = lutsize == LUTSizes.Size16 ? 16*4 : lutsize == LUTSizes.Size32 ? 32*8 : 64*8;
+            Size = lutsize == LUTSizes.Size16 ? 16 : lutsize == LUTSizes.Size32 ? 32 : lutsize == LUTSizes.Size64 ? 64 : 4;
+            int size = lutsize == LUTSizes.Size16 ? 16*4 : lutsize == LUTSizes.Size32 ? 32*8 : lutsize == LUTSizes.Size64 ? 64 * 8 : 4*2;
 
             _renderTarget = new RenderTarget2D(graphics, size, size  / (lutsize == LUTSizes.Size32 ? 2 : 1), false, SurfaceFormat.Color, DepthFormat.None);
 

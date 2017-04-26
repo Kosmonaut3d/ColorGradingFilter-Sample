@@ -30,7 +30,7 @@ namespace ColorGrading_Sample
 
         //private Texture2D _lut_64_default;
         //private Texture2D _lut_32_default;
-        private Texture2D _lut_default;
+        //private Texture2D _lut_default;
         private Texture2D _lut_ver1;
         private Texture2D _lut_ver2;
         private Texture2D _lut_ver3;
@@ -57,7 +57,7 @@ namespace ColorGrading_Sample
         //Originally with specific names, like "red filter". 
         private enum LUTModes
         {
-             ver1, ver2, ver3, ver4, ver5, ver6, ver7
+             ver1, ver2, ver3, ver4, ver5, ver6, ver7, None
         }
 
         #endregion
@@ -100,7 +100,7 @@ namespace ColorGrading_Sample
 
             //_lut_64_default = Content.Load<Texture2D>("Shaders/ColorGrading/lut_64_default");
             //_lut_32_default = Content.Load<Texture2D>("Shaders/ColorGrading/lut_32_default");
-            _lut_default = Content.Load<Texture2D>("Shaders/ColorGrading/lut_default");
+            //_lut_default = Content.Load<Texture2D>("Shaders/ColorGrading/lut_default");
             _lut_ver5 = Content.Load<Texture2D>("Shaders/ColorGrading/lut_ver1");
             _lut_ver1 = Content.Load<Texture2D>("Shaders/ColorGrading/lut_ver2");
             _lut_ver3 = Content.Load<Texture2D>("Shaders/ColorGrading/lut_ver3");
@@ -134,6 +134,7 @@ namespace ColorGrading_Sample
             //Create LUT
             if (_state.IsKeyDown(Keys.F12))
             {
+                _colorGradingFilter.CreateLUT(GraphicsDevice, ColorGradingFilter.LUTSizes.Size4, "LUT4.png");
                 _colorGradingFilter.CreateLUT(GraphicsDevice, ColorGradingFilter.LUTSizes.Size16, "LUT16.png");
                 _colorGradingFilter.CreateLUT(GraphicsDevice, ColorGradingFilter.LUTSizes.Size32, "LUT32.png");
                 _colorGradingFilter.CreateLUT(GraphicsDevice, ColorGradingFilter.LUTSizes.Size64, "LUT64.png");
@@ -216,22 +217,29 @@ namespace ColorGrading_Sample
              * We need to provide an image for the color grading
              * filter to process, along with a look up table.
              * If we use this for a game we must draw our game to a texture (rendertarget) beforehand*/
-            Texture2D colorGraded = _colorGradingFilter.Draw(GraphicsDevice, GetSelectedImage(), GetSelectedLUT());
+            Texture2D output = null;
+            if (_lutModes == LUTModes.None)
+                output = GetSelectedImage();
+            else
+            {
+                output = _colorGradingFilter.Draw(GraphicsDevice, GetSelectedImage(), GetSelectedLUT());
+            }
             
 
             //Apply bloom filter if we draw the game!
             Texture2D bloom = null;
             if (_displayMode == DisplayModes.Game)
-                bloom = _bloomFilter.Draw(colorGraded, Width, Height);
+                bloom = _bloomFilter.Draw(output, Width, Height);
 
             //Draw to the backbuffer
             GraphicsDevice.SetRenderTarget(null);
+            GraphicsDevice.Clear(Color.Black);
 
             //Draw our images to the screen
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
 
             //The texture can be treated just as any other one.
-            _spriteBatch.Draw(colorGraded, new Rectangle(0,0,Width,Height), Color.White);
+            _spriteBatch.Draw(output, new Rectangle(0,0,Width,Height), Color.White);
 
             //Bloom for our game
             if (_displayMode == DisplayModes.Game)
