@@ -28,7 +28,8 @@ namespace ColorGrading_Sample
         private BloomFilter _bloomFilter;
         private ColorGradingFilter _colorGradingFilter;
 
-        private Texture2D _lut_32_default;
+        //private Texture2D _lut_64_default;
+        //private Texture2D _lut_32_default;
         private Texture2D _lut_default;
         private Texture2D _lut_ver1;
         private Texture2D _lut_ver2;
@@ -97,7 +98,8 @@ namespace ColorGrading_Sample
 
             _colorGradingFilter = new ColorGradingFilter(GraphicsDevice, Content, "Shaders/ColorGrading/ColorGrading");
 
-            _lut_32_default = Content.Load<Texture2D>("Shaders/ColorGrading/lut_32_default");
+            //_lut_64_default = Content.Load<Texture2D>("Shaders/ColorGrading/lut_64_default");
+            //_lut_32_default = Content.Load<Texture2D>("Shaders/ColorGrading/lut_32_default");
             _lut_default = Content.Load<Texture2D>("Shaders/ColorGrading/lut_default");
             _lut_ver5 = Content.Load<Texture2D>("Shaders/ColorGrading/lut_ver1");
             _lut_ver1 = Content.Load<Texture2D>("Shaders/ColorGrading/lut_ver2");
@@ -128,13 +130,15 @@ namespace ColorGrading_Sample
 
             Window.Title = "F1 - F3: static images, F4: game, F5 - F11: LUTs";
 
-            /*
+            
             //Create LUT
             if (_state.IsKeyDown(Keys.F12))
             {
                 _colorGradingFilter.CreateLUT(GraphicsDevice, ColorGradingFilter.LUTSizes.Size16, "LUT16.png");
+                _colorGradingFilter.CreateLUT(GraphicsDevice, ColorGradingFilter.LUTSizes.Size32, "LUT32.png");
+                _colorGradingFilter.CreateLUT(GraphicsDevice, ColorGradingFilter.LUTSizes.Size64, "LUT64.png");
             }
-            */
+            
 
             //Change display mode
             if (_state.IsKeyDown(Keys.F1))
