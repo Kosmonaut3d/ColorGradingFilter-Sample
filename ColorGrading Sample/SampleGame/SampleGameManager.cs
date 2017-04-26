@@ -23,7 +23,11 @@ namespace ColorGrading_Sample.SampleGame
 
         public void Initialize()
         {
+            //Spawn player in the middle of the screen
             _playerShip = new PlayerShip(new Vector2(640, 400), 0);
+
+
+            //Spawn some other ships
 
             Random random = new Random();
 
@@ -86,7 +90,7 @@ namespace ColorGrading_Sample.SampleGame
             for (var i = 0; i < _aiShips.Count; i++)
             {
                 Ship ship = _aiShips[i];
-                //With all the ohter ships!
+                //With all the other ships!
                 for (var j = i + 1; j < _aiShips.Count + 1; j++)
                 {
                     Ship opponent;
