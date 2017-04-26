@@ -69,15 +69,15 @@ float4 PixelShaderCreateLUT(VertexShaderFSQOutput input) : COLOR0
 
 	//Note: The sample Location is 0.5, 0.5!
 	//So even though a pixel is stored at [0,0] its texCoord is [0.5, 0.5]
-	float2 pixel = float2(trunc(input.Position.x), trunc(input.Position.y));
+	float2 pixel = input.Position.xy; //float2(trunc(input.Position.x), trunc(input.Position.y));
 
-	float red = (pixel.x % Size) / (Size - 1);
-	float green = (pixel.y % Size) / (Size - 1);
+	float red = (pixel.x % Size) / Size;
+	float green = (pixel.y % Size) / Size;
 	
-	int col = trunc(pixel.x / Size);
-	int row = trunc(pixel.y / Size);
+	float col = trunc(pixel.x / Size);
+	float row = trunc(pixel.y / Size);
 
-	float blue = (row * SizeRoot + col) / (Size-1);
+	float blue = (row * SizeRoot + col) / Size;
 
 	return float4(red, green, blue, 1);
 }
@@ -90,18 +90,17 @@ float4 PixelShaderApplyLUT(VertexShaderFSQOutput input) : COLOR0
 	//Manual trilinear interpolation
 
 	//We need to clamp since our values go, for example, from 0 to 15. But with a red value of 1.0 we would get 16, which is on the next table already.
+	//We also need to shift half a pixel to the left, since our sampling locations do not match the storage location (see CreateLUT)
+	float halfOffset = 0.5f;
 
-	//OBSOLETE: We also need to shift half a pixel to the left, since our sampling locations do not match the storage location (see CreateLUT)
-	//float halfOffset = 0.5f;
-
-	float red = baseTexture.r * (Size-1);
+	float red = clamp(baseTexture.r * Size - halfOffset, 0, Size-1);
 	
 	float redinterpol = frac(red);
 
-	float green = baseTexture.g * (Size - 1);
+	float green = clamp(baseTexture.g * Size - halfOffset, 0, Size - 1);
 	float greeninterpol = frac(green);
 
-	float blue = baseTexture.b * (Size - 1);
+	float blue = clamp(baseTexture.b * Size - halfOffset, 0, Size - 1);
 	float blueinterpol = frac(blue);
 
 	//Blue base value

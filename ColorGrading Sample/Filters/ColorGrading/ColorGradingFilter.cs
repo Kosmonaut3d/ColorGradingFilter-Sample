@@ -7,7 +7,7 @@ namespace ColorGrading_Sample.Filters.ColorGrading
 {
     /// <summary>
     /// 
-    ///     /// Version 1.0, 24. April. 2017
+    ///     /// Version 1.1, 26. April. 2017
     /// 
     ///     Color Grading / Correction Filter, TheKosmonaut (kosmonaut3d@googlemail.com)
     /// 
