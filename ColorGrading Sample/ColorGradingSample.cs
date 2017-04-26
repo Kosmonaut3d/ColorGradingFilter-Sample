@@ -278,9 +278,9 @@ namespace ColorGrading_Sample
 
         protected override void UnloadContent()
         {
-            _backbufferRenderTarget.Dispose();
-            _bloomFilter.Dispose();
-            _colorGradingFilter.Dispose();
+            _backbufferRenderTarget?.Dispose();
+            _bloomFilter?.Dispose();
+            _colorGradingFilter=.Dispose();
         }
     }
 }
