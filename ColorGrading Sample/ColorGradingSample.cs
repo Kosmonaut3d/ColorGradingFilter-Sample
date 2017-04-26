@@ -280,7 +280,7 @@ namespace ColorGrading_Sample
         {
             _backbufferRenderTarget?.Dispose();
             _bloomFilter?.Dispose();
-            _colorGradingFilter=.Dispose();
+            _colorGradingFilter?.Dispose();
         }
     }
 }
