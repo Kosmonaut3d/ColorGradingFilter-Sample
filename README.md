@@ -28,7 +28,7 @@ LUTs (Look up tables) are used for the color correction. However, due to space a
 
 This is the default look up table for the program has a size of (64 x 64)
 
-![LUT](http://i.imgur.com/72A4Kag.png)
+![LUT](http://i.imgur.com/feLnCJ7.png)
 
 I use 16 values for each color and store all their permutations per default.
 
