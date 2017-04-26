@@ -36,7 +36,7 @@ One can generate this lut by calling
 
     _colorGradingFilter.CreateLUT(GraphicsDevice, ColorGradingFilter.LUTSizes.Size16, "LUT16.png");
 
-LUTSize32 gives higher precision, but needs more storage space (256x256). Even higher or lower resolutions could be implemented by simply changing the Size from 32 to 64 inside the function for example, but I found these 2 sufficient.
+LUTSize32 gives higher precision, but needs more storage space (256x256). LUTSize4 and LUTSize64 are other options, but I have not found them to be useful.
 
 # Manipulating the LUT
 
