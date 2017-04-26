@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ColorGrading_Sample.SampleGame.Shaders;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -18,7 +15,7 @@ namespace ColorGrading_Sample.SampleGame
     public class SampleGameManager
     {
         private PlayerShip _playerShip;
-        private List<AiShip> _aiShips = new List<AiShip>();
+        private readonly List<AiShip> _aiShips = new List<AiShip>();
 
         private SampleShader _sampleShader;
 
@@ -102,11 +99,11 @@ namespace ColorGrading_Sample.SampleGame
                     if (Vector2.DistanceSquared(ship.Position, opponent.Position) < 45 * 45)
                     {
                         //Both get a boost in opposite directions
-                        Vector2 Bounce = ship.Position - opponent.Position;
-                        Bounce.Normalize();
+                        Vector2 bounce = ship.Position - opponent.Position;
+                        bounce.Normalize();
                         
-                        ship.Speed += Bounce * (opponent == _playerShip ? 8 : 2);
-                        opponent.Speed -= Bounce * (opponent == _playerShip ? 0.5f : 2);
+                        ship.Speed += bounce * (opponent == _playerShip ? 8 : 2);
+                        opponent.Speed -= bounce * (opponent == _playerShip ? 0.5f : 2);
                     }
                 }
             }

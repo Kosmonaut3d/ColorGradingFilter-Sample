@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ColorGrading_Sample.SampleGame;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -28,17 +22,17 @@ namespace ColorGrading_Sample.Filters.ColorGrading
         #region fields & properties
 
         #region fields
-        private Effect _shaderEffect;
-        private FullScreenQuadRenderer _fsq;
+        private readonly Effect _shaderEffect;
+        private readonly FullScreenQuadRenderer _fsq;
 
-        private RenderTarget2D renderTarget;
+        private RenderTarget2D _renderTarget;
         
-        private EffectParameter _sizeParam;
-        private EffectParameter _sizeRootParam;
-        private EffectParameter _inputTextureParam;
-        private EffectParameter _lutParam;
-        private EffectPass _createLUTPass;
-        private EffectPass _applyLUTPass;
+        private readonly EffectParameter _sizeParam;
+        private readonly EffectParameter _sizeRootParam;
+        private readonly EffectParameter _inputTextureParam;
+        private readonly EffectParameter _lutParam;
+        private readonly EffectPass _createLUTPass;
+        private readonly EffectPass _applyLUTPass;
         
         private int _size;
         private Texture2D _inputTexture;
@@ -117,7 +111,7 @@ namespace ColorGrading_Sample.Filters.ColorGrading
         {
             _shaderEffect?.Dispose();
             _fsq?.Dispose();
-            renderTarget?.Dispose();
+            _renderTarget?.Dispose();
         }
 
         #endregion
@@ -134,22 +128,22 @@ namespace ColorGrading_Sample.Filters.ColorGrading
         public RenderTarget2D Draw(GraphicsDevice graphics, Texture2D input, Texture2D lookupTable)
         {
             //Set up rendertarget
-            if (renderTarget == null || renderTarget.Width != input.Width || renderTarget.Height != input.Height)
+            if (_renderTarget == null || _renderTarget.Width != input.Width || _renderTarget.Height != input.Height)
             {
-                renderTarget?.Dispose();
-                renderTarget = new RenderTarget2D(graphics, input.Width, input.Height, false, SurfaceFormat.Color, DepthFormat.None);
+                _renderTarget?.Dispose();
+                _renderTarget = new RenderTarget2D(graphics, input.Width, input.Height, false, SurfaceFormat.Color, DepthFormat.None);
             }
 
             InputTexture = input;
             LookUpTable = lookupTable;
             Size = (lookupTable.Width == 64) ? 16 : 32;
                 
-            graphics.SetRenderTarget(renderTarget);
+            graphics.SetRenderTarget(_renderTarget);
             graphics.BlendState = BlendState.Opaque;
 
             _applyLUTPass.Apply();
             _fsq.RenderFullscreenQuad(graphics);
-            return renderTarget;
+            return _renderTarget;
         }
 
         /// <summary>
@@ -161,22 +155,22 @@ namespace ColorGrading_Sample.Filters.ColorGrading
         /// <param name="relativeFilePath">for example "Lut16.png". The base directory is where the .exe is started from</param>
         public void CreateLUT(GraphicsDevice graphics, LUTSizes lutsize, string relativeFilePath)
         {
-            renderTarget?.Dispose();
+            _renderTarget?.Dispose();
 
             _sizeParam.SetValue((float) ( lutsize == LUTSizes.Size16 ? 16 : 32));
             _sizeRootParam.SetValue((float) (lutsize == LUTSizes.Size16 ? 4 : 8));
             int size = lutsize == LUTSizes.Size16 ? 16 * 4 : 32 * 8;
 
-            renderTarget = new RenderTarget2D(graphics, size, size, false, SurfaceFormat.Color, DepthFormat.None);
+            _renderTarget = new RenderTarget2D(graphics, size, size, false, SurfaceFormat.Color, DepthFormat.None);
 
-            graphics.SetRenderTarget(renderTarget);
+            graphics.SetRenderTarget(_renderTarget);
 
             _createLUTPass.Apply();
             _fsq.RenderFullscreenQuad(graphics);
 
             //Save this texture
             Stream stream = File.Create(relativeFilePath);
-            renderTarget.SaveAsPng(stream, renderTarget.Width, renderTarget.Height);
+            _renderTarget.SaveAsPng(stream, _renderTarget.Width, _renderTarget.Height);
             stream.Dispose();
         }
 

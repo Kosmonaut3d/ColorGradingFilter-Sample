@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 #endregion
 
-namespace Bloom_Sample
+namespace ColorGrading_Sample.Filters.Bloom
 {
     /// <summary>
     /// Renders a simple quad to the screen. Uncomment the Vertex / Index buffers to make it a static fullscreen quad. 

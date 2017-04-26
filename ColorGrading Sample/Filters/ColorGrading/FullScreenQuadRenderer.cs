@@ -56,9 +56,11 @@ namespace ColorGrading_Sample.Filters.ColorGrading
                 (PrimitiveType.TriangleList, 0,0,4);
         }
 
-        public struct FullScreenQuadVertex
+        private struct FullScreenQuadVertex
         {
             // Stores the starting position of the particle.
+            // ReSharper disable once NotAccessedField.Local
+            // ReSharper disable once MemberCanBePrivate.Local
             public Vector2 Position;
 
             public static readonly VertexDeclaration VertexDeclaration = new VertexDeclaration
@@ -72,6 +74,7 @@ namespace ColorGrading_Sample.Filters.ColorGrading
                 Position = position;
             }
 
+            // ReSharper disable once UnusedMember.Local
             public const int SizeInBytes = 8;
         }
 

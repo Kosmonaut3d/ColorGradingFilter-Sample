@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using ColorGrading_Sample.Filters.ColorGrading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace ColorGrading_Sample.SampleGame.Shaders
 {
@@ -16,100 +10,99 @@ namespace ColorGrading_Sample.SampleGame.Shaders
     //The interesting thing it does is to draw lines between 2 points, so framerate doesn't matter for continuity.
     public class SampleShader
     {
-        private Effect _shaderEffect;
-        private FullScreenQuadRenderer _fsq;
-        private RenderTarget2D renderTarget0;
-        private RenderTarget2D renderTarget1;
+        private readonly FullScreenQuadRenderer _fsq;
+        private RenderTarget2D _renderTarget0;
+        private RenderTarget2D _renderTarget1;
 
-        private Vector2[] Positions;
-        private Vector2[] LastPositions;
-        private Vector3[] Colors;
-        private EffectParameter _positionsParam;
-        private EffectParameter _lastPositionsParam;
-        private EffectParameter _colorsParam;
-        private EffectParameter _texParam;
-        private EffectPass _trailPass;
+        private Vector2[] _positions;
+        private Vector2[] _lastPositions;
+        private Vector3[] _colors;
+        private readonly EffectParameter _positionsParam;
+        private readonly EffectParameter _lastPositionsParam;
+        private readonly EffectParameter _colorsParam;
+        private readonly EffectParameter _texParam;
+        private readonly EffectPass _trailPass;
 
-        private bool offframe = false;
+        private bool _offframe;
 
         public SampleShader(GraphicsDevice graphics, ContentManager content, string shaderPath)
         {
-            _shaderEffect = content.Load<Effect>(shaderPath);
-            _lastPositionsParam = _shaderEffect.Parameters["LastPositions"];
-            _positionsParam = _shaderEffect.Parameters["Positions"];
-            _colorsParam = _shaderEffect.Parameters["Colors"];
-            _texParam = _shaderEffect.Parameters["Tex"];
+            var shaderEffect = content.Load<Effect>(shaderPath);
+            _lastPositionsParam = shaderEffect.Parameters["LastPositions"];
+            _positionsParam = shaderEffect.Parameters["Positions"];
+            _colorsParam = shaderEffect.Parameters["Colors"];
+            _texParam = shaderEffect.Parameters["Tex"];
 
-            _trailPass = _shaderEffect.Techniques["Trails"].Passes[0];
+            _trailPass = shaderEffect.Techniques["Trails"].Passes[0];
             _fsq = new FullScreenQuadRenderer(graphics);
         }
 
         public void Draw(GraphicsDevice graphics, int width, int height, List<AiShip> ships, PlayerShip playerShip)
         {
-            if (renderTarget0 == null || renderTarget0.Width != width || renderTarget0.Height != height)
+            if (_renderTarget0 == null || _renderTarget0.Width != width || _renderTarget0.Height != height)
             {
-                renderTarget0?.Dispose();
-                renderTarget1?.Dispose();
-                renderTarget0 = new RenderTarget2D(graphics, width, height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
-                renderTarget1 = new RenderTarget2D(graphics, width, height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+                _renderTarget0?.Dispose();
+                _renderTarget1?.Dispose();
+                _renderTarget0 = new RenderTarget2D(graphics, width, height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
+                _renderTarget1 = new RenderTarget2D(graphics, width, height, false, SurfaceFormat.Color, DepthFormat.None, 0, RenderTargetUsage.PreserveContents);
 
                 //Clear
-                graphics.SetRenderTarget(renderTarget0); graphics.Clear(Color.Black);
-                graphics.SetRenderTarget(renderTarget1); graphics.Clear(Color.Black);
+                graphics.SetRenderTarget(_renderTarget0); graphics.Clear(Color.Black);
+                graphics.SetRenderTarget(_renderTarget1); graphics.Clear(Color.Black);
             }
 
-            offframe = !offframe;
+            _offframe = !_offframe;
 
-            graphics.SetRenderTarget(offframe ? renderTarget1 : renderTarget0);
+            graphics.SetRenderTarget(_offframe ? _renderTarget1 : _renderTarget0);
 
             //Initialize
-            if (Positions == null)
+            if (_positions == null)
             {
-                Positions = new Vector2[ships.Count + 1];
-                LastPositions = new Vector2[ships.Count + 1];
-                Colors = new Vector3[ships.Count + 1];
+                _positions = new Vector2[ships.Count + 1];
+                _lastPositions = new Vector2[ships.Count + 1];
+                _colors = new Vector3[ships.Count + 1];
 
                 //Ai ships
                 for (var index = 0; index < ships.Count; index++)
                 {
                     AiShip ship = ships[index];
-                    Colors[index] = ship.ColorV3;
+                    _colors[index] = ship.ColorV3;
 
-                    LastPositions[index] = ship.Position;
-                    Positions[index] = ship.Position;
+                    _lastPositions[index] = ship.Position;
+                    _positions[index] = ship.Position;
                 }
                 //Player ship
-                Colors[ships.Count] = Vector3.One;
-                LastPositions[ships.Count] = playerShip.Position;
-                Positions[ships.Count] = playerShip.Position;
+                _colors[ships.Count] = Vector3.One;
+                _lastPositions[ships.Count] = playerShip.Position;
+                _positions[ships.Count] = playerShip.Position;
             }
 
             for (var index = 0; index < ships.Count; index++)
             {
                 AiShip ship = ships[index];
 
-                if (Vector2.DistanceSquared(ship.Position, LastPositions[index]) > 49)
+                if (Vector2.DistanceSquared(ship.Position, _lastPositions[index]) > 49)
                 {
-                    LastPositions[index] = Positions[index];
-                    Positions[index] = ship.Position;
+                    _lastPositions[index] = _positions[index];
+                    _positions[index] = ship.Position;
                 }
             }
 
-            if (Vector2.DistanceSquared(playerShip.Position, LastPositions[ships.Count]) > 49)
+            if (Vector2.DistanceSquared(playerShip.Position, _lastPositions[ships.Count]) > 49)
             {
-                LastPositions[ships.Count] = Positions[ships.Count];
-                Positions[ships.Count] = playerShip.Position;
+                _lastPositions[ships.Count] = _positions[ships.Count];
+                _positions[ships.Count] = playerShip.Position;
             }
 
             //Colors[0] = Vector3.One;
             //Positions[0] = Mouse.GetState().Position.ToVector2();
 
-            _positionsParam.SetValue(Positions);
-            _lastPositionsParam.SetValue(LastPositions);
+            _positionsParam.SetValue(_positions);
+            _lastPositionsParam.SetValue(_lastPositions);
 
-            _colorsParam.SetValue(Colors);
+            _colorsParam.SetValue(_colors);
 
-            _texParam.SetValue(offframe ? renderTarget0 : renderTarget1);
+            _texParam.SetValue(_offframe ? _renderTarget0 : _renderTarget1);
 
             graphics.BlendState = BlendState.Opaque;
 
@@ -121,11 +114,7 @@ namespace ColorGrading_Sample.SampleGame.Shaders
 
         public RenderTarget2D GetRenderTarget()
         {
-            return offframe ? renderTarget1 : renderTarget0;
-        }
-        public RenderTarget2D GetRenderTargetOff()
-        {
-            return offframe ? renderTarget0 : renderTarget1;
+            return _offframe ? _renderTarget1 : _renderTarget0;
         }
 
     }

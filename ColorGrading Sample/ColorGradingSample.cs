@@ -1,6 +1,4 @@
-﻿using System;
-using System.Security.Cryptography;
-using Bloom_Sample;
+﻿using ColorGrading_Sample.Filters.Bloom;
 using ColorGrading_Sample.Filters.ColorGrading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -17,7 +15,7 @@ namespace ColorGrading_Sample
 
         #region fields
         private GraphicsDeviceManager graphics;
-        private SpriteBatch spriteBatch;
+        private SpriteBatch _spriteBatch;
 
         public static int Width = 1280;
         public static int Height = 800;
@@ -46,7 +44,8 @@ namespace ColorGrading_Sample
 
         private DisplayModes _displayMode;
         private LUTModes _lutModes;
-        public enum DisplayModes
+
+        private enum DisplayModes
         {
             Kingfisher,
             Winebar,
@@ -55,7 +54,7 @@ namespace ColorGrading_Sample
         }
 
         //Originally with specific names, like "red filter". 
-        public enum LUTModes
+        private enum LUTModes
         {
              ver1, ver2, ver3, ver4, ver5, ver6, ver7
         }
@@ -86,11 +85,11 @@ namespace ColorGrading_Sample
 
             Load();
         }
-        
-        protected void Load()
+
+        private void Load()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             _sampleGame.Load(Content, GraphicsDevice);
             _bloomFilter = new BloomFilter();
@@ -204,9 +203,9 @@ namespace ColorGrading_Sample
                 //Foreground
                 GraphicsDevice.SetRenderTarget(_backbufferRenderTarget);
 
-                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-                _sampleGame.Draw(spriteBatch);
-                spriteBatch.End();
+                _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+                _sampleGame.Draw(_spriteBatch);
+                _spriteBatch.End();
             }
 
             /*this is the important step
@@ -225,17 +224,17 @@ namespace ColorGrading_Sample
             GraphicsDevice.SetRenderTarget(null);
 
             //Draw our images to the screen
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive);
 
             //The texture can be treated just as any other one.
-            spriteBatch.Draw(colorGraded, new Rectangle(0,0,Width,Height), Color.White);
+            _spriteBatch.Draw(colorGraded, new Rectangle(0,0,Width,Height), Color.White);
 
             //Bloom for our game
             if (_displayMode == DisplayModes.Game)
-                spriteBatch.Draw(bloom, Vector2.Zero, Color.White);
+                _spriteBatch.Draw(bloom, Vector2.Zero, Color.White);
 
 
-            spriteBatch.End();
+            _spriteBatch.End();
         }
 
         private Texture2D GetSelectedLUT()
