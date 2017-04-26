@@ -1,7 +1,14 @@
 # ColorGradingFilter for Monogame and XNA
 
 A post processing filter written in c# and HLSL.
-Included is a sample solution, which should ease integration into your projects.
+
+Included is a sample solution, which should ease integration into your projects. I've recorded a video with a quick overview of the sample application. You can change images and LUTs with the F1 - F11 keys on your keyboard.
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=FA6LEo3k5FY
+" target="_blank"><img src="http://img.youtube.com/vi/FA6LEo3k5FY/0.jpg" 
+alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
+
+
 
 # Color Grading / Color Correction
 
