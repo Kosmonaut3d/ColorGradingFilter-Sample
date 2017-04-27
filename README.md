@@ -54,7 +54,7 @@ The relevant files are found in Filters/ColorGrading and Content/Shaders/ColorGr
 * ColorGradingFilter.cs
 * FullScreenQuadRenderer.cs
 and
-* ColorGrading.cs
+* ColorGrading.fx
 * (optional) lut_default.png
 
 A quick sample code would look like this
