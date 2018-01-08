@@ -1,10 +1,12 @@
-# ColorGradingFilter for Monogame and XNA
+# ColorGradingFilter for Monogame and XNA (DUAL LUT BRANCH)
 
 ![Alt text](http://i.imgur.com/5wCQzCl.gif)
 
 A post processing filter written in c# and HLSL.
 
 Included is a sample solution, which should ease integration into your projects. I've recorded a video with a quick overview of the sample application. You can change images and LUTs with the F1 - F11 keys on your keyboard.
+
+# Note: In this branch you can supply 2 luts and smoothly transition between them! In the sample you can move your mouse from left to right to change the transition progress.
 
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=FA6LEo3k5FY
 " target="_blank"><img src="http://img.youtube.com/vi/FA6LEo3k5FY/0.jpg" 
