@@ -183,3 +183,9 @@ UpgradeLog*.htm
 FakesAssemblies/
 
 # LightSwitch generated files
+/.vs/slnx.sqlite
+/.vs/ProjectSettings.json
+/.vs/ColorGrading Sample/v15/Server/sqlite3/storage.ide-wal
+/.vs/ColorGrading Sample/v15/Server/sqlite3/storage.ide-shm
+/.vs/ColorGrading Sample/v15/Server/sqlite3/storage.ide
+/.vs/ColorGrading Sample/v15/Server/sqlite3/db.lock

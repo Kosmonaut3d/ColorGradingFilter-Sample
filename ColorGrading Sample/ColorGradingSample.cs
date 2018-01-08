@@ -21,6 +21,7 @@ namespace ColorGrading_Sample
         public static int Height = 800;
 
         private KeyboardState _state;
+        private MouseState _mouseState;
         private SampleGameManager _sampleGame;
 
         private RenderTarget2D _backbufferRenderTarget;
@@ -38,6 +39,8 @@ namespace ColorGrading_Sample
         private Texture2D _lut_ver5;
         private Texture2D _lut_ver6;
         private Texture2D _lut_ver7;
+
+        private float _lutTransitionProgress;
 
         private Texture2D _kingfisher;
         private Texture2D _winebar;
@@ -123,12 +126,13 @@ namespace ColorGrading_Sample
                 Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            _state = Keyboard.GetState();
+            _state      = Keyboard.GetState();
+            _mouseState = Mouse.GetState();
 
             if(_displayMode == DisplayModes.Game)
                 _sampleGame.Update(gameTime, _state);
 
-            Window.Title = "F1 - F3: static images, F4: game, F5 - F11: LUTs";
+            Window.Title = "F1 - F3: static images, F4: game, F5 - F11: LUTs, Move mouse for transition!";
 
             /*
             //Create LUT
@@ -140,6 +144,9 @@ namespace ColorGrading_Sample
                 _colorGradingFilter.CreateLUT(GraphicsDevice, ColorGradingFilter.LUTSizes.Size64, "LUT64.png");
             }
             */
+
+            //Track progress
+            _lutTransitionProgress = MathHelper.Clamp(_mouseState.Position.X / (float)Width, 0.0f, 1.0f);
 
             //Change display mode
             if (_state.IsKeyDown(Keys.F1))
@@ -222,7 +229,7 @@ namespace ColorGrading_Sample
                 output = GetSelectedImage();
             else
             {
-                output = _colorGradingFilter.Draw(GraphicsDevice, GetSelectedImage(), GetSelectedLUT());
+                output = _colorGradingFilter.Draw(GraphicsDevice, GetSelectedImage(), _lut_ver1, GetSelectedLUT(), _lutTransitionProgress);
             }
             
 
@@ -254,7 +261,7 @@ namespace ColorGrading_Sample
             switch (_lutModes)
             {
                 case LUTModes.ver1:
-                    return _lut_ver1;
+                    return _lut_ver7;
                 case LUTModes.ver2:
                     return _lut_ver2;
                 case LUTModes.ver3:

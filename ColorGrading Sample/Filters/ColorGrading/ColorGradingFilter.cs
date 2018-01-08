@@ -30,13 +30,17 @@ namespace ColorGrading_Sample.Filters.ColorGrading
         private readonly EffectParameter _sizeParam;
         private readonly EffectParameter _sizeRootParam;
         private readonly EffectParameter _inputTextureParam;
-        private readonly EffectParameter _lutParam;
+        private readonly EffectParameter _lut0Param;
+        private readonly EffectParameter _lut1Param;
+        private readonly EffectParameter _progressParam;
         private readonly EffectPass _createLUTPass;
         private readonly EffectPass _applyLUTPass;
         
         private int _size;
+        private float _progress;
         private Texture2D _inputTexture;
-        private Texture2D _lookupTable;
+        private Texture2D _lookupTable0;
+        private Texture2D _lookupTable1;
 
         public enum LUTSizes { Size16, Size32, Size64, Size4 };
 
@@ -58,6 +62,19 @@ namespace ColorGrading_Sample.Filters.ColorGrading
             }
         }
 
+        private float Progress
+        {
+            get { return _progress; }
+            set
+            {
+                if (Math.Abs(value - _progress)>0.001f)
+                {
+                    _progress = value;
+                    _progressParam.SetValue(value);
+                }
+            }
+        }
+
         private Texture2D InputTexture
         {
             get { return _inputTexture; }
@@ -71,15 +88,28 @@ namespace ColorGrading_Sample.Filters.ColorGrading
             }
         }
 
-        private Texture2D LookUpTable 
+        private Texture2D LookUpTable0 
         {
-            get { return _lookupTable; }
+            get { return _lookupTable0; }
             set
             {
-                if (value != _lookupTable)
+                if (value != _lookupTable0)
                 {
-                    _lookupTable = value;
-                    _lutParam.SetValue(value);
+                    _lookupTable0 = value;
+                    _lut0Param.SetValue(value);
+                }
+            }
+        }
+
+        private Texture2D LookUpTable1
+        {
+            get { return _lookupTable1; }
+            set
+            {
+                if (value != _lookupTable1)
+                {
+                    _lookupTable1 = value;
+                    _lut1Param.SetValue(value);
                 }
             }
         }
@@ -96,15 +126,17 @@ namespace ColorGrading_Sample.Filters.ColorGrading
         /// <param name="shaderPath">the relative shader path needed for the content manager to load. For example "Shaders/ColorGrading/Colorgrading"</param>
         public ColorGradingFilter(GraphicsDevice graphics, ContentManager content, string shaderPath)
         {
-            _shaderEffect = content.Load<Effect>(shaderPath);
-            _sizeParam = _shaderEffect.Parameters["Size"];
-            _sizeRootParam = _shaderEffect.Parameters["SizeRoot"];
+            _shaderEffect      = content.Load<Effect>(shaderPath);
+            _sizeParam         = _shaderEffect.Parameters["Size"];
+            _sizeRootParam     = _shaderEffect.Parameters["SizeRoot"];
             _inputTextureParam = _shaderEffect.Parameters["InputTexture"];
-            _lutParam = _shaderEffect.Parameters["LUT"];
+            _lut0Param         = _shaderEffect.Parameters["LUT0"];
+            _lut1Param         = _shaderEffect.Parameters["LUT1"];
+            _progressParam     = _shaderEffect.Parameters["Progress"];
 
-            _applyLUTPass = _shaderEffect.Techniques["ApplyLUT"].Passes[0];
+            _applyLUTPass  = _shaderEffect.Techniques["ApplyLUT"].Passes[0];
             _createLUTPass = _shaderEffect.Techniques["CreateLUT"].Passes[0];
-            _fsq = new FullScreenQuadRenderer(graphics);
+            _fsq           = new FullScreenQuadRenderer(graphics);
         }
 
         public void Dispose()
@@ -125,8 +157,13 @@ namespace ColorGrading_Sample.Filters.ColorGrading
         /// <param name="input"> The basic texture or rendertarget you want to modify</param>
         /// <param name="lookupTable"> The specific lookup table used</param>
         /// <returns></returns>
-        public RenderTarget2D Draw(GraphicsDevice graphics, Texture2D input, Texture2D lookupTable)
+        public RenderTarget2D Draw(GraphicsDevice graphics, Texture2D input, Texture2D lookupTable0, Texture2D lookupTable1, float progress)
         {
+            if(lookupTable0.Width != lookupTable1.Width)
+            {
+                throw new Exception("LUTs need to have the same resolution!");
+            }
+
             //Set up rendertarget
             if (_renderTarget == null || _renderTarget.Width != input.Width || _renderTarget.Height != input.Height)
             {
@@ -135,8 +172,10 @@ namespace ColorGrading_Sample.Filters.ColorGrading
             }
 
             InputTexture = input;
-            LookUpTable = lookupTable;
-            Size = ((lookupTable.Width == 512) ? 64 : (lookupTable.Width == 256) ? 32 : (lookupTable.Width == 64) ? 16 : 4);
+            LookUpTable0 = lookupTable0;
+            LookUpTable1 = lookupTable1;
+            Size         = ((lookupTable0.Width == 512) ? 64 : (lookupTable0.Width == 256) ? 32 : (lookupTable0.Width == 64) ? 16 : 4);
+            Progress     = progress;
                 
             graphics.SetRenderTarget(_renderTarget);
             graphics.BlendState = BlendState.Opaque;
