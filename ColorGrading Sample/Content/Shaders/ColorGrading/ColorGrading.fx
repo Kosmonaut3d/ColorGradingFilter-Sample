@@ -212,7 +212,8 @@ float4 PixelShaderApplyLUT(VertexShaderFSQOutput input) : COLOR0
 {
     //Our input
     float4 baseTexture = InputTexture.Load(int3(input.Position.xy, 0));
-
+    
+    //Note to self: A better transition between colors might be more beautiful. HSV maybe.
     return lerp(PSApplyLUT(baseTexture, LUT0), PSApplyLUT(baseTexture, LUT1), Progress);
 
 }
