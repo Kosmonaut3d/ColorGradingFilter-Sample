@@ -29,6 +29,8 @@ namespace ColorGrading_Sample
         private BloomFilter _bloomFilter;
         private ColorGradingFilter _colorGradingFilter;
 
+        private DebugInfo _debugInfo;
+
         //private Texture2D _lut_64_default;
         //private Texture2D _lut_32_default;
         //private Texture2D _lut_default;
@@ -74,7 +76,7 @@ namespace ColorGrading_Sample
             graphics.PreferredBackBufferHeight = Height;
 
             graphics.GraphicsProfile = GraphicsProfile.HiDef;
-            IsFixedTimeStep = true;
+            IsFixedTimeStep = false;
             //TargetElapsedTime = TimeSpan.FromMilliseconds(100);
             graphics.SynchronizeWithVerticalRetrace = false;
             IsMouseVisible = true;
@@ -100,6 +102,9 @@ namespace ColorGrading_Sample
             _bloomFilter.Load(GraphicsDevice, Content, Width, Height, SurfaceFormat.Color);
 
             _colorGradingFilter = new ColorGradingFilter(GraphicsDevice, Content, "Shaders/ColorGrading/ColorGrading");
+
+            _debugInfo = new DebugInfo();
+            _debugInfo.LoadContent(_spriteBatch, Content);
 
             //_lut_64_default = Content.Load<Texture2D>("Shaders/ColorGrading/lut_64_default");
             //_lut_32_default = Content.Load<Texture2D>("Shaders/ColorGrading/lut_32_default");
@@ -254,6 +259,8 @@ namespace ColorGrading_Sample
 
 
             _spriteBatch.End();
+
+            _debugInfo.Draw(gameTime);
         }
 
         private Texture2D GetSelectedLUT()

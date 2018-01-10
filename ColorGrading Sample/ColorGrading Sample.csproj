@@ -42,6 +42,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ColorGradingSample.cs" />
+    <Compile Include="DebugInfo\DebugInfo.cs" />
+    <Compile Include="DebugInfo\MngStringBuilder.cs" />
     <Compile Include="Filters\Bloom\BloomFilter.cs" />
     <Compile Include="Filters\Bloom\QuadRenderer.cs" />
     <Compile Include="Filters\ColorGrading\ColorGradingFilter.cs" />
