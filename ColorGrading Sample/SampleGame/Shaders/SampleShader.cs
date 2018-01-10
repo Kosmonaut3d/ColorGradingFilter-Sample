@@ -27,14 +27,14 @@ namespace ColorGrading_Sample.SampleGame.Shaders
 
         public SampleShader(GraphicsDevice graphics, ContentManager content, string shaderPath)
         {
-            var shaderEffect = content.Load<Effect>(shaderPath);
+            var shaderEffect    = content.Load<Effect>(shaderPath);
             _lastPositionsParam = shaderEffect.Parameters["LastPositions"];
-            _positionsParam = shaderEffect.Parameters["Positions"];
-            _colorsParam = shaderEffect.Parameters["Colors"];
-            _texParam = shaderEffect.Parameters["Tex"];
+            _positionsParam     = shaderEffect.Parameters["Positions"];
+            _colorsParam        = shaderEffect.Parameters["Colors"];
+            _texParam           = shaderEffect.Parameters["Tex"];
 
             _trailPass = shaderEffect.Techniques["Trails"].Passes[0];
-            _fsq = new FullScreenQuadRenderer(graphics);
+            _fsq       = new FullScreenQuadRenderer(graphics);
         }
 
         public void Draw(GraphicsDevice graphics, int width, int height, List<AiShip> ships, PlayerShip playerShip)
@@ -58,23 +58,23 @@ namespace ColorGrading_Sample.SampleGame.Shaders
             //Initialize
             if (_positions == null)
             {
-                _positions = new Vector2[ships.Count + 1];
+                _positions     = new Vector2[ships.Count + 1];
                 _lastPositions = new Vector2[ships.Count + 1];
-                _colors = new Vector3[ships.Count + 1];
+                _colors        = new Vector3[ships.Count + 1];
 
                 //Ai ships
                 for (var index = 0; index < ships.Count; index++)
                 {
-                    AiShip ship = ships[index];
+                    AiShip ship    = ships[index];
                     _colors[index] = ship.ColorV3;
 
                     _lastPositions[index] = ship.Position;
-                    _positions[index] = ship.Position;
+                    _positions[index]     = ship.Position;
                 }
                 //Player ship
-                _colors[ships.Count] = Vector3.One;
+                _colors[ships.Count]        = Vector3.One;
                 _lastPositions[ships.Count] = playerShip.Position;
-                _positions[ships.Count] = playerShip.Position;
+                _positions[ships.Count]     = playerShip.Position;
             }
 
             for (var index = 0; index < ships.Count; index++)
@@ -84,17 +84,17 @@ namespace ColorGrading_Sample.SampleGame.Shaders
                 if (Vector2.DistanceSquared(ship.Position, _lastPositions[index]) > 49)
                 {
                     _lastPositions[index] = _positions[index];
-                    _positions[index] = ship.Position;
+                    _positions[index]     = ship.Position;
                 }
             }
 
             if (Vector2.DistanceSquared(playerShip.Position, _lastPositions[ships.Count]) > 49)
             {
                 _lastPositions[ships.Count] = _positions[ships.Count];
-                _positions[ships.Count] = playerShip.Position;
+                _positions[ships.Count]     = playerShip.Position;
             }
 
-            //Colors[0] = Vector3.One;
+            //Colors[0]    = Vector3.One;
             //Positions[0] = Mouse.GetState().Position.ToVector2();
 
             _positionsParam.SetValue(_positions);

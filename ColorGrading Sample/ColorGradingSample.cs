@@ -82,8 +82,11 @@ namespace ColorGrading_Sample
             IsMouseVisible = true;
 
             graphics.ApplyChanges();
+
+            Window.Title = "F1 - F3: static images, F4: game, F5 - F11: LUTs, Move mouse for transition!";
+
         }
-        
+
         protected override void Initialize()
         {
             _sampleGame = new SampleGameManager();
@@ -120,8 +123,8 @@ namespace ColorGrading_Sample
             //https://pixabay.com
             //CC0 licence.
             _kingfisher = Content.Load<Texture2D>("SampleImages/Kingfisher");
-            _church = Content.Load<Texture2D>("SampleImages/Church");
-            _winebar = Content.Load<Texture2D>("SampleImages/Winebar");
+            _church     = Content.Load<Texture2D>("SampleImages/Church");
+            _winebar    = Content.Load<Texture2D>("SampleImages/Winebar");
         }
         
         
@@ -137,8 +140,6 @@ namespace ColorGrading_Sample
             if(_displayMode == DisplayModes.Game)
                 _sampleGame.Update(gameTime, _state);
 
-            Window.Title = "F1 - F3: static images, F4: game, F5 - F11: LUTs, Move mouse for transition!";
-
             /*
             //Create LUT
             if (_state.IsKeyDown(Keys.F12))
@@ -150,7 +151,7 @@ namespace ColorGrading_Sample
             }
             */
 
-            //Track progress
+            //Track progress. Disabling clamp will yield interesting "overcharged" effects.
             _lutTransitionProgress = MathHelper.Clamp(_mouseState.Position.X / (float)Width, 0.0f, 1.0f);
 
             //Change display mode
@@ -231,7 +232,9 @@ namespace ColorGrading_Sample
              * If we use this for a game we must draw our game to a texture (rendertarget) beforehand*/
             Texture2D output = null;
             if (_lutModes == LUTModes.None)
+            {
                 output = GetSelectedImage();
+            }
             else
             {
                 output = _colorGradingFilter.Draw(GraphicsDevice, GetSelectedImage(), _lut_ver1, GetSelectedLUT(), _lutTransitionProgress);
